@@ -1,0 +1,24 @@
+{
+  "name": "task-manager-backend-nodejs-express-mongo",
+  "version": "1.0.0",
+  "description": "A task manager application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sosyfy/task-manager-backend-nodeJs-express-mongo.git"
+  },
+  "keywords": [
+    "task",
+    "manager"
+  ],
+  "author": "Prof-Awis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sosyfy/task-manager-backend-nodeJs-express-mongo/issues"
+  },
+  "homepage": "https://github.com/sosyfy/task-manager-backend-nodeJs-express-mongo#readme"
+}
