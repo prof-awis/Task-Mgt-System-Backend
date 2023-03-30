@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 // Add routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", verifyToken, taskRoutes);
-app.use("/api/categories", categoryRoutes);
+app.use("/api/categories", verifyToken, categoryRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

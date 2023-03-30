@@ -1,10 +1,10 @@
-const Category = require('../models/category');
+const Category = require("../models/category");
 
 exports.getCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find();
+    const categories = await Category.find({ createdBy: req.user.id });
 
-    res.json({ categories });
+    res.json(categories);
   } catch (err) {
     next(err);
   }
@@ -15,14 +15,19 @@ exports.createCategory = async (req, res, next) => {
     const { name } = req.body;
 
     const category = new Category({
-      name
+      name,
+      createdBy: req.user.id,
     });
 
     await category.save();
 
-    res.status(201).json({ message: 'Category created successfully', category });
+    console.log(category);
+    const categories = await Category.find({
+      createdBy: req.user.id,
+    });
+
+    res.status(201).json({ categories, category: category._id.toString() });
   } catch (err) {
     next(err);
   }
 };
-

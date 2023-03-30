@@ -1,11 +1,13 @@
-const Task = require('../models/task');
-const Category = require('../models/category');
+const Task = require("../models/task");
+const Category = require("../models/category");
 
 exports.getTasks = async (req, res, next) => {
   try {
-    const tasks = await Task.find({ createdBy: req.userId });
+    const { category } = req.query;
+    console.log(category, req.user.id);
 
-    res.json({ tasks });
+    let tasks = await Task.find({ category: category, createdBy: req.user.id });
+    res.status(200).json(tasks);
   } catch (err) {
     next(err);
   }
@@ -13,26 +15,22 @@ exports.getTasks = async (req, res, next) => {
 
 exports.createTask = async (req, res, next) => {
   try {
-    const { title, description, dueDate, priority, categoryId } = req.body;
-
-    const category = await Category.findById(categoryId);
-
-    if (!category) {
-      return res.status(400).json({ message: 'Invalid category ID' });
-    }
+    const { title, description, dueDate, priority, category } = req.body;
 
     const task = new Task({
       title,
       description,
       dueDate,
       priority,
-      type: category._id,
-      createdBy: req.userId
+      category: category,
+      createdBy: req.user.id,
     });
 
     await task.save();
 
-    res.status(201).json({ message: 'Task created successfully', task });
+    const tasks = await Task.find({ category, createdBy: req.user.id });
+
+    res.status(201).json({ message: "Task created successfully", tasks });
   } catch (err) {
     next(err);
   }
@@ -44,16 +42,16 @@ exports.updateTask = async (req, res, next) => {
     const updatedFields = req.body;
 
     const task = await Task.findOneAndUpdate(
-      { _id: taskId, createdBy: req.userId },
+      { _id: taskId, createdBy: req.user.id },
       updatedFields,
       { new: true }
     );
 
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
-
-    res.json({ message: 'Task updated successfully', task });
+    const tasks = await Task.find({ createdBy: req.user.id });
+    res.json({ message: "Task updated successfully", tasks });
   } catch (err) {
     next(err);
   }
@@ -63,13 +61,17 @@ exports.deleteTask = async (req, res, next) => {
   try {
     const taskId = req.params.id;
 
-    const task = await Task.findOneAndDelete({ _id: taskId, createdBy: req.userId });
+    const task = await Task.findOneAndDelete({
+      _id: taskId,
+      createdBy: req.userId,
+    });
 
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
+    const tasks = await Task.find({ createdBy: req.user.id });
 
-    res.json({ message: 'Task deleted successfully', task });
+    res.json({ message: "Task deleted successfully", tasks });
   } catch (err) {
     next(err);
   }
