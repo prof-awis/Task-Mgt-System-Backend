@@ -14,14 +14,12 @@ exports.createCategory = async (req, res, next) => {
   try {
     const { name } = req.body;
 
-    const category = new Category({
-      name,
+    const category = await Category.create({
+      name: name,
       createdBy: req.user.id,
     });
 
-    await category.save();
-
-    console.log(category);
+    console.log(category, name);
     const categories = await Category.find({
       createdBy: req.user.id,
     });
