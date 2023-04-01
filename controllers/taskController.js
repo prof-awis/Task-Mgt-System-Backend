@@ -43,14 +43,17 @@ exports.updateTask = async (req, res, next) => {
 
     const task = await Task.findOneAndUpdate(
       { _id: taskId, createdBy: req.user.id },
-      updatedFields,
-      { new: true }
+      updatedFields
     );
 
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
-    const tasks = await Task.find({ createdBy: req.user.id });
+
+    const tasks = await Task.find({
+      createdBy: req.user.id,
+      category: updatedFields.category,
+    });
     res.json({ message: "Task updated successfully", tasks });
   } catch (err) {
     next(err);
@@ -63,15 +66,19 @@ exports.deleteTask = async (req, res, next) => {
 
     const task = await Task.findOneAndDelete({
       _id: taskId,
-      createdBy: req.userId,
+      createdBy: req.user.id,
     });
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res.status(404).json({ message: "Task not found", tasks: [] });
     }
-    const tasks = await Task.find({ createdBy: req.user.id });
 
-    res.json({ message: "Task deleted successfully", tasks });
+    const tasks = await Task.find({
+      createdBy: req.user.id,
+      category: task.category,
+    });
+
+    res.json({ message: "Task updated successfully", tasks });
   } catch (err) {
     next(err);
   }
