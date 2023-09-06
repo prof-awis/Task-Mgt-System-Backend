@@ -22,6 +22,8 @@ exports.register = async (req, res, next) => {
     res.status(201).json({ message: "User created successfully", user });
   } catch (err) {
     next(err);
+
+    // console.log(err);
   }
 };
 

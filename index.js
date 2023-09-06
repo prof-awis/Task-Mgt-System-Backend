@@ -3,7 +3,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 require("dotenv").config();
-require("./config/db");
+const connectToDB = require("./config/db");
 // import our database connection
 const { handleError } = require("./middlewares/errorHandlers");
 const { verifyToken } = require("./middlewares/verifyToken");
@@ -12,7 +12,7 @@ const taskRoutes = require("./routes/taskRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 
 const app = express();
-
+connectToDB();
 // Add middlewares
 app.use(cors());
 app.use(morgan("dev"));
